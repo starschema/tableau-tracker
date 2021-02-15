@@ -1,0 +1,9 @@
+[submodule "frontend/extension"]
+	path = frontend/extension
+	url = https://github.com/starschema/tableau-tracker-extension.git
+[submodule "frontend/registration"]
+	path = frontend/registration
+	url = https://github.com/starschema/tableau-tracker-registration-frontend.git
+[submodule "frontend/wdc"]
+	path = frontend/wdc
+	url = https://github.com/starschema/tableau-tracker-wdc.git
