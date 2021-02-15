@@ -1,0 +1,68 @@
+<izpack:userinput version="5.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:izpack="http://izpack.org/schema/userinput"
+                  xsi:schemaLocation="http://izpack.org/schema/userinput http://izpack.org/schema/5.0/izpack-userinput-5.0.xsd">
+    <panel id="userInputPanel">
+        <field type="staticText" align="left" txt="Enter the Information required" id="input.title"/>
+        <!--PORT-->
+        <field type="text" variable="TT_PORT">
+            <spec txt="Port to run on: " id="input.port" size="6" set="8080"/>
+        </field>
+        <field type="divider"/>
+        <!--DB TYPE-->
+        <field type="staticText" align="left" txt="Database type: " />
+        <field type="combo" variable="TT_DB_DRIVER">
+            <spec>
+                <choice txt="Postgres" value="org.postgresql.Driver" set="true"/>
+                <choice txt="SQLServer" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+            </spec>
+        </field>
+        <!--DB URL-->
+        <field type="text" variable="TT_DB_URL">
+            <spec txt="Database URL: " id="input.db_url" size="40" set="jdbc:postgresql://localhost:5432/postgres"/>
+        </field>
+        <!--DB USER-->
+        <field type="text" variable="TT_DB_USER">
+            <spec txt="Database User: " id="input.db_user" size="25" set="postgres"/>
+        </field>
+        <!--DB Password-->
+        <field type="password" variable="TT_DB_PASS">
+            <spec>
+                <pwd txt="Database Password:" size="25" set=""/>
+            </spec>
+        </field>
+        <!--DB SCHEMA-->
+        <field type="text" variable="TT_DB_SCHEMA">
+            <spec txt="Database Schema name: " id="input.db_schema" size="25" set="public"/>
+        </field>
+        <field type="divider"/>
+        <!--SSL enabled-->
+        <field type="check" align="left" variable="TT_SSL_ENABLED">
+            <spec txt="SSL enabled (only needed if running standalone): " id="input.ssl_enabled" size="5" true="true"
+                  false="false" set="true"/>
+        </field>
+        <!--SSL PORT-->
+        <field type="text" variable="TT_SSL_PORT" conditionid="ssl_enabled_cond">
+            <spec txt="SSL Port: " id="input.ssl_port" size="6" set="443"/>
+        </field>
+        <!--Keystore path-->
+        <field type="file" align="left" variable="TT_SSL_KS" conditionid="ssl_enabled_cond">
+            <spec txt="Existing SSL keystore to import:" size="25" set=""/>
+        </field>
+        <!--Keystore key alias-->
+        <field type="text" align="left" variable="TT_SSL_KA" conditionid="ssl_enabled_cond">
+            <spec txt="Keystore Key Alias:" size="25" set="alias-1"/>
+        </field>
+        <!--Kestore password-->
+        <field type="password" align="left" variable="TT_SSL_KSP" conditionid="ssl_enabled_cond">
+            <spec>
+                <pwd txt="Keystore Password:" size="25" set=""/>
+            </spec>
+        </field>
+        <!--PrivateKey Password-->
+        <field type="password" align="left" variable="TT_SSL_PKP" conditionid="ssl_enabled_cond">
+            <spec>
+                <pwd txt="PrivateKey Password:" size="25" set=""/>
+            </spec>
+        </field>
+    </panel>
+</izpack:userinput>

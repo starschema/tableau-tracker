@@ -1,0 +1,59 @@
+{
+  "events": [
+    {
+      "data": {
+        "appliedValues": [
+          {
+            "_formattedValue": "L",
+            "_value": "L"
+          },
+          {
+            "_formattedValue": "M",
+            "_value": "M"
+          }
+        ],
+        "document": {
+          "location": "https://tableau-tracker.starschema.com/extension/",
+          "referer": "NULL"
+        },
+        "fieldName": "Size",
+        "filterType": "categorical",
+        "settings": {
+          "userMetadata": "{\"dashboard\":\"HUNT IT DOWN POC\"}"
+        },
+        "sheet": "HUNT IT DOWN",
+        "window": {
+          "height": 876,
+          "width": 1616
+        }
+      },
+      "deploymentId": "${deploymentId}",
+      "kind": "FILTER_CHANGE",
+      "recordedAt": "2018-12-03T21:58:15.947Z",
+      "sourceId": "pjg6-uo92-mkbp-eomq-ihs2-aisj",
+      "sourceSequenceId": "15",
+      "dashboardName": "Dashboard 1",
+      "workbookName": "Superstore"
+    },
+    {
+      "data": {
+        "document": {
+          "location": "https://tableau-tracker.starschema.com/extension/",
+          "referer": "NULL"
+        },
+        "window": {
+          "height": 876,
+          "width": 1616
+        }
+      },
+      "deploymentId": "${deploymentId}",
+      "kind": "NOOP",
+      "recordedAt": "2018-12-03T21:58:15.947Z",
+      "sourceId": "pjg6-uo92-mkbp-eomq-ihs2-aisj",
+      "sourceSequenceId": "15",
+      "dashboardName": "Dashboard 1",
+      "projectName": "Default",
+      "workbookName": "Superstore"
+    }
+  ]
+}

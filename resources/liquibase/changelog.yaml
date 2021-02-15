@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: liquibase/initial.yaml
+  - include:
+      file: liquibase/addIndexes.yaml

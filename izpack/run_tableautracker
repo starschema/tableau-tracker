@@ -1,0 +1,4 @@
+#!/bin/sh
+
+sh ./setenv.sh
+exec java -jar ${FINAL_PROJECT_NAME}.jar

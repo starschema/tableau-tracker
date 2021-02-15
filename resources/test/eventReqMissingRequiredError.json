@@ -1,0 +1,17 @@
+{
+  "events": [
+    {
+      "data": {
+        "document": {
+          "location": "https://tableau-tracker.starschema.com/extension/",
+          "referer": "NULL"
+        },
+        "window": {
+          "height": 876,
+          "width": 1616
+        }
+      },
+      "deploymentId": "${deploymentId}"
+    }
+  ]
+}

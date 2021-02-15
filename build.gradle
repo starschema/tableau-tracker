@@ -1,0 +1,174 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.bmuschko:gradle-tomcat-plugin:$tomcat_plugin_version"
+        classpath "com.github.jengelman.gradle.plugins:shadow:$shadow_version"
+        classpath("com.bmuschko:gradle-izpack-plugin:${izpackGradlePluginVersion}")
+    }
+}
+
+//Jar
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'kotlin'
+apply plugin: 'application'
+//War
+apply plugin: 'war'
+apply plugin: 'com.bmuschko.tomcat'
+//IzPack
+apply plugin: 'com.bmuschko.izpack'
+//Test coverage
+apply plugin: 'jacoco'
+
+
+group 'tableau-tracker'
+version '2.1.0'
+mainClassName = "io.ktor.server.tomcat.EngineMain"
+webAppDirName = 'webapp'
+
+shadowJar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+tomcat {
+    contextPath = '/'
+    httpProtocol = 'org.apache.coyote.http11.Http11Nio2Protocol'
+    ajpProtocol  = 'org.apache.coyote.ajp.AjpNio2Protocol'
+}
+
+sourceSets {
+    main.kotlin.srcDirs = main.java.srcDirs = ['src']
+    test.kotlin.srcDirs = test.java.srcDirs = ['test']
+    main.resources.srcDirs = ['resources']
+    test.resources.srcDirs = ['testresources']
+    izpack {
+        resources.srcDirs = ['izpack']
+    }
+}
+
+//Bind izpack installer make to assemble task
+build.dependsOn izPackCreateInstaller
+izPackCreateInstaller.dependsOn processIzpackResources
+
+izpack {
+    baseDir = file("$buildDir")
+    installFile = file("$buildDir/resources/izpack/installer.xml")
+    outputFile = file("$buildDir/libs/${project.name}-${version}-installer.jar")
+    compression = 'deflate'
+    compressionLevel = 9
+    appProperties = ['PROJECT_NAME': "${project.name}", 'PROJECT_VERSION': "${version}", 'FINAL_PROJECT_NAME': "${project.name}-${version}"]
+}
+
+//Prepare frontends
+
+//Registration
+task prepareRegistartionFrontendBasic(type: Copy){
+    from "$projectDir/frontend/registration"
+    include "**/*"
+    exclude "starschema.html"
+    into "$buildDir/resources/main/static/registration/basic"
+}
+
+//Extension
+task prepareExtensionFrontendBasic(type: Copy){
+    from "$projectDir/frontend/extension"
+    include "**/*"
+    exclude "*starschema.html"
+    into "$buildDir/resources/main/static/extension/basic"
+}
+
+//WDC
+task prepareWdcFrontendBasic(type: Copy){
+    from "$projectDir/frontend/wdc"
+    include "**/*"
+    exclude "starschema.html"
+    into "$buildDir/resources/main/static/wdc/basic"
+}
+
+//All frontend tasks
+task processFrontends{
+    dependsOn prepareRegistartionFrontendBasic
+    dependsOn prepareExtensionFrontendBasic
+    dependsOn prepareWdcFrontendBasic
+}
+
+processResources.finalizedBy processFrontends
+
+//Add example workbook to static hosting
+task prepareExampleWorkbook(type: Copy){
+    from "$projectDir/Tableau_Tracker_Demo.twbx"
+    into "$buildDir/resources/main/static"
+}
+
+processFrontends.finalizedBy prepareExampleWorkbook
+
+//Create a ZIP with all the contents if the installer cannot be used (no ui OS)
+task exportZIP(type: Zip){
+    dependsOn build
+    from '/'
+    include 'INSTALLATION.md'
+    from "$buildDir/libs/"
+    include "${project.name}-${version}-all.jar"
+    rename "${project.name}-${version}-all.jar", "${project.name}-${version}.jar"
+    include "${project.name}-${version}.war"
+
+    from ('izpack') {
+        include 'run_tableautracker'
+        include 'run_tableautracker.bat'
+        exclude 'setenv.bat'
+        exclude 'setenv.sh'
+        expand(FINAL_PROJECT_NAME: "${project.name}-${version}")
+    }
+    from ('izpack') {
+        include 'setenv.bat'
+        include 'setenv.sh'
+        exclude 'run_tableautracker'
+        exclude 'run_tableautracker.bat'
+        filter { line -> line.replaceAll(/\$\{.+\}/, '')}
+    }
+    archiveName "${project.name}-${version}.zip"
+    destinationDir(file("$buildDir/libs/"))
+}
+build.finalizedBy exportZIP
+
+repositories {
+    mavenLocal()
+    jcenter()
+    flatDir {
+        dirs 'libs'
+    }
+    maven { url = 'https://kotlin.bintray.com/ktor' }
+    maven { url = "https://bintray.com/kotlin/exposed" }
+}
+
+dependencies {
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:$tomcat_version",
+            "org.apache.tomcat.embed:tomcat-embed-jasper:$tomcat_version"
+
+    izpack "org.codehaus.izpack:izpack-ant:${izpackVersion}"
+
+    //Database
+    implementation "org.jetbrains.exposed:exposed:$exposed_version"
+    implementation "org.postgresql:postgresql:$postgres_driver_version"
+    implementation "com.microsoft.sqlserver:mssql-jdbc:$sqlserver_driver_version"
+    implementation "io.ktor:ktor-freemarker:$ktor_version"
+    implementation "org.liquibase:liquibase-core:$liquibase_version"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "io.ktor:ktor-server-tomcat:$ktor_version"
+
+    //TODO: Exclude gson completely
+    implementation "io.ktor:ktor-gson:$ktor_version"
+    implementation "io.ktor:ktor-jackson:$ktor_version"
+    implementation "ch.qos.logback:logback-classic:$logback_version"
+
+    testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
+    testImplementation "io.mockk:mockk:1.9.2.kotlin12"
+    testImplementation 'com.opentable.components:otj-pg-embedded:0.13.1'
+}

@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: addIndexes
+      author: bardizs
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name: deployment_id
+                  type: varchar(255)
+            indexName: deploymentIdIndex
+            tableName: deployment
+        - createIndex:
+            columns:
+              - column:
+                  name: admin_key
+                  type: varchar(255)
+            indexName: adminKeyIndex
+            tableName: deployment
+        - createIndex:
+            columns:
+              - column:
+                  name: deployment_fk
+                  type: bigint
+            indexName: deploymentFkIndex
+            tableName: event

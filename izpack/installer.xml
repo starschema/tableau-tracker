@@ -1,0 +1,78 @@
+<izpack:installation version="5.0"
+                     xmlns:izpack="http://izpack.org/schema/installation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
+    <resources>
+        <res id="userInputSpec.xml" src="resources\izpack\userInputSpec.xml" parse="yes" type="xml"/>
+    </resources>
+
+    <variables>
+        <variable name="FINAL_PROJECT_NAME" value="@{FINAL_PROJECT_NAME}"/>
+    </variables>
+
+    <conditions>
+        <condition type="variable" id="ssl_enabled_cond">
+            <name>TT_SSL_ENABLED</name>
+            <value>true</value>
+        </condition>
+    </conditions>
+
+    <dynamicvariables>
+        <variable name="TT_PORT" value="@{ENV[TT_PORT]}"/>
+        <variable name="TT_SSL_ENABLED" value="@{ENV[TT_SSL_ENABLED]}" />
+        <variable name="TT_SSL_PORT" value="@{ENV[TT_SSL_PORT]}"/>
+        <variable name="TT_SSL_KS" value="@{ENV[TT_SSL_KS]}" />
+        <variable name="TT_SSL_KSP" value="@{ENV[TT_SSL_KSP]}" />
+        <variable name="TT_SSL_PKP" value="@{ENV[TT_SSL_PKP]}" />
+        <variable name="TT_SSL_KA" value="@{ENV[TT_SSL_KA]}" />
+        <variable name="TT_DB_DRIVER" value="@{ENV[TT_DB_DRIVER]}"/>
+        <variable name="TT_DB_URL" value="@{ENV[TT_DB_URL]}"/>
+        <variable name="TT_DB_USER" value="@{ENV[TT_DB_USER]}"/>
+        <variable name="TT_DB_PASS" value="@{ENV[TT_DB_PASS]}"/>
+        <variable name="TT_DB_SCHEMA" value="@{ENV[TT_DB_SCHEMA]}"/>
+    </dynamicvariables>
+
+    <info>
+        <appname>@{PROJECT_NAME}</appname>
+        <appversion>@{PROJECT_VERSION}</appversion>
+        <appsubpath>@{PROJECT_NAME}\@{PROJECT_VERSION}</appsubpath>
+        <javaversion>1.8</javaversion>
+        <uninstaller name = "uninstall-@{FINAL_PROJECT_NAME}.jar" path="$INSTALL_PATH"/>
+    </info>
+
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+
+    <guiprefs width="800" height="600" resizable="yes">
+        <modifier key="useHeadingPanel" value="yes" />
+        <modifier key="layoutAnchor" value="CENTER"/>
+    </guiprefs>
+
+    <panels>
+        <panel classname="HelloPanel" />
+        <panel classname="TargetPanel">
+            <validator classname="com.izforge.izpack.installer.validator.ConditionValidator"/>
+        </panel>
+        <panel classname="UserInputPanel" id="userInputPanel"/>
+        <panel classname="InstallPanel" />
+        <panel classname="FinishPanel" />
+    </panels>
+
+    <packs>
+        <pack id="@{PROJECT_NAME}id" name="@{FINAL_PROJECT_NAME}" required="yes" hidden="true" >
+            <description>The core files needed for the application</description>
+            <singlefile src="libs\@{FINAL_PROJECT_NAME}-all.jar" target="${INSTALL_PATH}/@{FINAL_PROJECT_NAME}.jar"/>
+            <file src="libs\@{FINAL_PROJECT_NAME}.war" targetdir="${INSTALL_PATH}"/>
+            <file src="resources\izpack\run_tableautracker.bat" targetdir="${INSTALL_PATH}"/>
+            <file src="resources\izpack\run_tableautracker" targetdir="${INSTALL_PATH}"/>
+            <file src="resources\izpack\setenv.bat" targetdir="${INSTALL_PATH}"/>
+            <file src="resources\izpack\setenv.sh" targetdir="${INSTALL_PATH}"/>
+            <file src="..\INSTALLATION.md" targetdir="${INSTALL_PATH}"/>
+            <parsable targetfile="${INSTALL_PATH}\setenv.bat"/>
+            <parsable targetfile="${INSTALL_PATH}\setenv.sh"/>
+            <parsable targetfile="${INSTALL_PATH}\run_tableautracker.bat"/>
+            <parsable targetfile="${INSTALL_PATH}\run_tableautracker"/>
+        </pack>
+    </packs>
+
+</izpack:installation>
