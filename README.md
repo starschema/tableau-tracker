@@ -110,5 +110,5 @@ Execute this command in the repository's root directory to run:
 
 ## Installation / deployment
 
-The application can also be installed with the `tableau-tracker-{version}-installer.jar`or can be deployed to a Tomcat server using the ``tableau-tracker-{version}.war` file produced at build.
+The application can also be installed with the `tableau-tracker-{version}-installer.jar`or can be deployed to a Tomcat server using the `tableau-tracker-{version}.war` file produced at build.
 Further details: Installation.md 
